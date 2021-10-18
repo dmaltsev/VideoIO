@@ -150,10 +150,12 @@ public class Camera: NSObject {
     
     public private(set) var videoDataOutput: AVCaptureVideoDataOutput?
         
-    public func enableVideoDataOutput(on queue: DispatchQueue = .main, delegate: AVCaptureVideoDataOutputSampleBufferDelegate) throws {
+    public func enableVideoDataOutput(on queue: DispatchQueue = .main,
+                                      preferredDeviceTypes: [AVCaptureDevice.DeviceType] = [],
+                                      delegate: AVCaptureVideoDataOutputSampleBufferDelegate) throws {
         assert(self.videoDataOutput == nil)
         if self.videoDevice == nil {
-            try self.switchToVideoCaptureDevice(with: self.defaultCameraPosition)
+            try self.switchToVideoCaptureDevice(with: self.defaultCameraPosition, preferredDeviceTypes: preferredDeviceTypes)
         }
         self.captureSession.beginConfiguration()
         defer {
@@ -315,11 +317,13 @@ public class Camera: NSObject {
     }
     
     @available(iOS 11.0, *)
-    public func enableSynchronizedVideoAndDepthDataOutput(on queue: DispatchQueue, delegate: AVCaptureDataOutputSynchronizerDelegate) throws {
+    public func enableSynchronizedVideoAndDepthDataOutput(on queue: DispatchQueue,
+                                                          preferredDeviceTypes: [AVCaptureDevice.DeviceType] = [],
+                                                          delegate: AVCaptureDataOutputSynchronizerDelegate) throws {
         assert(self.videoDataOutput == nil)
         assert(self.outputSynchronizer == nil)
         if self.videoDevice == nil {
-            try self.switchToVideoCaptureDevice(with: self.defaultCameraPosition)
+            try self.switchToVideoCaptureDevice(with: self.defaultCameraPosition, preferredDeviceTypes: preferredDeviceTypes)
         }
         self.captureSession.beginConfiguration()
         defer {
